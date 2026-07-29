@@ -5,7 +5,7 @@ metadata:
   phase: "implement"
   input: "path to the spec file (e.g. docs/specs/1234567-feature-name.md)"
   output: "implemented feature with updated spec checkboxes, verification results, and committed phases"
-  dependencies: "onboard-project"
+  dependencies: "onboard-project, define-test-case, commit"
 ---
 
 # Implement Plan
@@ -62,12 +62,18 @@ If not already on a feature branch, create one. Skip if the branch already exist
 
 For each phase in the spec's **Step by Step Tasks** section:
 
-1. **Implement all steps in the phase** — follow the spec's *intent* (the behavior it describes). Follow it verbatim only when the step's structure is also consistent with the codebase and the conventions (see next). Adapt when the codebase has evolved since the spec was written, or when a step's prescribed structure conflicts with the **Conventions to Follow** section, the **Code quality rules** below, `# WORKSPACE` conventions, or feedback memory — surface the conflict first (see "When the plan doesn't match reality"). A spec that names a specific class/method placement is expressing intent, not a mandate to violate the thin-model / jobs-orchestrate rules.
-1.1 Before creating new files, check whether existing files could be reused or extended instead. If so, follow the existing conventions and code patterns. or think hard about whether it's worth proposing new conventions and code patterns that could be useful for this feature and reusable in the future. If so, propose them to the team.
-2. **Run verification** — execute the relevant commands from the spec's **Validation Commands** section; fix any failures before marking the phase complete
-3. **Update the spec** — check off completed items (`- [ ]` → `- [x]`) and mark the phase header `✅` when fully done
-4. **Pause and confirm** — report what was done and ask the user to confirm before moving to the next phase
-5. **Commit the phase** — invoke the `commit` skill to generate the commit message; ask for confirmation before committing
+1. **Draft the phase's test cases** — decide the seams this phase introduces or changes (the public interfaces callers will actually use), then invoke the `define-test-case` skill for this phase only, seeded by the matching entries from the spec's **Testing Strategy** → **Behaviors to Cover**. It returns seam-anchored DSL cases in build order; implement them one at a time, in that order, rather than writing every case for the phase upfront.
+
+   Draft per phase, never once for the whole spec — batching all phases here just relocates the upfront-dumping the skill warns against. Skip this step for a phase that introduces no testable behavior (pure config, scaffolding, a rename) and say so when you report the phase.
+
+   If `define-test-case` flags a design gap — a boundary the case needs to stub that isn't independently injectable — resolve it before implementing, not after. That is the signal to fix the seam while it is still cheap.
+
+2. **Implement all steps in the phase** — follow the spec's *intent* (the behavior it describes). Follow it verbatim only when the step's structure is also consistent with the codebase and the conventions (see next). Adapt when the codebase has evolved since the spec was written, or when a step's prescribed structure conflicts with the **Conventions to Follow** section, the **Code quality rules** below, `# WORKSPACE` conventions, or feedback memory — surface the conflict first (see "When the plan doesn't match reality"). A spec that names a specific class/method placement is expressing intent, not a mandate to violate the thin-model / jobs-orchestrate rules.
+2.1 Before creating new files, check whether existing files could be reused or extended instead. If so, follow the existing conventions and code patterns. or think hard about whether it's worth proposing new conventions and code patterns that could be useful for this feature and reusable in the future. If so, propose them to the team.
+3. **Run verification** — execute the relevant commands from the spec's **Validation Commands** section, plus the cases drafted in step 1; fix any failures before marking the phase complete
+4. **Update the spec** — check off completed items (`- [ ]` → `- [x]`) and mark the phase header `✅` when fully done
+5. **Pause and confirm** — report what was done and ask the user to confirm before moving to the next phase
+6. **Commit the phase** — invoke the `commit` skill to generate the commit message; ask for confirmation before committing
 
 ### When the plan doesn't match reality — or its own conventions
 

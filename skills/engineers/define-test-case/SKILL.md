@@ -2,8 +2,8 @@
 name: define-test-case
 description: Define acceptance test cases in DSL format at confirmed seams — happy paths, edge cases, error scenarios, and authorization, sequenced into a build order
 metadata:
-  phase: "test"
-  input: "feature name or description to generate test cases for"
+  phase: "implement"
+  input: "one implementation phase or slice, plus the behaviors it must satisfy"
   output: "structured, sequenced DSL test cases in comment format checked against the coverage checklist"
 ---
 
@@ -15,8 +15,12 @@ You are helping define automated acceptance test cases using a Domain Specific L
 
 Use this skill when the user:
 - asks to define or write acceptance test cases for a feature
-- wants happy-path, edge-case, error, and authorization scenarios drafted before implementation
+- wants happy-path, edge-case, error, and authorization scenarios drafted before writing the code that satisfies them
 - is starting TDD/BDD-style work and needs test cases specified first
+
+It is also invoked by the `implement` skill, once per phase, before that phase's code is written.
+
+**Scope it to one phase or slice, never a whole feature.** Every case needs a confirmed seam — a real public interface — so this skill runs at implementation time, when the seam is being built and can still be changed. Running it against a whole feature plan before any code exists produces cases anchored to imagined interfaces, which is the upfront dumping the Anti-patterns section forbids. A feature plan should carry plain-language *behaviors to cover*; this skill turns one phase's worth of those into seam-anchored cases.
 
 ## Core Principles
 
@@ -191,7 +195,9 @@ Re-order or insert cases as understanding changes between cycles — the list is
 ### 1. Load Context
 Load context per `# WORKSPACE` → **Context Loading** (Tier 0 + Tier 1 for this feature) if that convention is present in this project; otherwise proceed directly to Step 2. Reading `docs_context`/`system_context` first means case names and DSL vocabulary match the project's existing domain language, and any documented invariants or ADRs in this area are respected rather than contradicted by a new case.
 
-### 2. Understand the Feature
+### 2. Understand the Slice
+If a spec exists, start from its **Testing Strategy** → **Behaviors to Cover**, taking only the entries this phase is responsible for — those are the agreed behaviors, but they carry no seams, so you still confirm the seams below. Add behaviors the plan missed; drop any this phase does not touch.
+
 Ask clarifying questions about:
 - What functionality is being tested
 - Which systems/services are involved

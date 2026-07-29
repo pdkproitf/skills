@@ -73,11 +73,13 @@ If `adw_id` was provided:
 
 Replace `{descriptive-name}` with a short, hyphenated name derived from the feature (e.g., `add-retry-logic`, `create-workflow-api`, `implement-agent-logging`).
 
-### Step 4: Define Test Cases
+### Step 4: Enumerate Behaviors to Cover
 
-Invoke the `define-test-case` skill with the feature name to draft acceptance test cases in DSL format covering happy paths, edge cases, error scenarios, and auth.
+List the behaviors this feature must be tested against — one line each, in plain language, across happy paths, edge cases, error scenarios, and permission/authorization. Skip a category with a one-line reason rather than inventing an entry to fill it.
 
-Paste the output into the **Testing Strategy** section of the plan.
+Write these into the **Testing Strategy** → **Behaviors to Cover** section of the plan.
+
+**Do not write DSL test cases here.** A DSL case requires a confirmed seam (the specific public interface under test), and this plan deliberately does not decide class or method placement — see Constraint 4. Seam-anchored cases are drafted by the `implement` skill, per phase, once the seam exists. What belongs in the plan is *what must hold true*, not *where it is asserted*.
 
 ---
 
@@ -158,11 +160,24 @@ So that <the benefit or outcome>.
 
 ## Testing Strategy
 
+### Behaviors to Cover
+
+<One line per behavior that must hold, in plain language — no seams, no DSL, no assertion function names. These become seam-anchored DSL cases during implementation, via the `define-test-case` skill. Note any category that does not apply, with a one-line reason.>
+
+**Happy paths**
+- <e.g. A user with a valid cart can complete checkout and gets a confirmed order>
+
+**Edge cases & boundary conditions**
+- <e.g. Checkout with an empty cart>
+
+**Error scenarios**
+- <e.g. The payment provider declines>
+
+**Permission / authorization**
+- <e.g. An unauthenticated user cannot check out>
+
 ### Unit Tests
 <What units of logic need tests, and what each test should verify.>
-
-### Edge Cases
-<Specific edge cases — not generic ones. Be precise about what could go wrong.>
 
 ---
 
