@@ -27,7 +27,7 @@ Skills are organized by audience:
 │   │   ├── find-patterns/             # Extract examples and conventions
 │   │   ├── feature/                   # Research & write feature spec
 │   │   ├── implement/                 # Execute spec phase by phase
-│   │   ├── define-test-case/          # Define acceptance tests (DSL)
+│   │   ├── define-test-case/          # Define acceptance tests (DSL), per implement phase
 │   │   ├── commit/                    # Group changes & write commit messages
 │   │   ├── document/                  # Generate feature docs from diff
 │   │   ├── save-progress/             # Checkpoint: WIP commit + session file
@@ -80,9 +80,9 @@ metadata:
 Skills form a pipeline. Typical feature flow:
 
 1. **`onboard-project`** — Load docs, domain models, TODOs, refresh code indexes (session start)
-2. **`feature`** — Research codebase, design options, write spec
-3. **`define-test-case`** — Draft acceptance tests before coding
-4. **`implement`** — Execute spec phase by phase, verify, commit each phase
+2. **`feature`** — Research codebase, design options, write spec (incl. the behaviors that must hold under test)
+3. **`implement`** — Execute spec phase by phase, verify, commit each phase
+4. **`define-test-case`** — Invoked by `implement` at the start of each phase: turns that phase's behaviors into seam-anchored DSL cases before its code is written
 5. **`commit`** — Group changes by logical concern, write Conventional Commit messages
 6. **`save-progress`** — Checkpoint: WIP commit + session file (if interrupted)
 7. **`resume-work`** — Restore session and continue from last unchecked step

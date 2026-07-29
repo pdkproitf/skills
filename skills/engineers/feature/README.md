@@ -13,7 +13,7 @@ The plan covers:
 - Relevant files (existing and new)
 - Phased implementation (Foundation → Core → Integration)
 - Step-by-step tasks with specific file paths
-- Testing strategy with acceptance test cases (via `define-test-case`)
+- Testing strategy — the behaviors that must hold, in plain language (`implement` turns them into seam-anchored cases via `define-test-case`, once the seams exist)
 - Acceptance criteria and validation commands
 
 ---

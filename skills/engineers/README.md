@@ -23,8 +23,8 @@ The skills below aren't independent utilities — they form one pipeline. This i
 
 1. **Bootstrap once per project — or let `onboard-project` do it for you** — `central-workspace` scans existing prompts/paths and writes the single `workspace.md` every tool auto-loads. You can run it directly; you can also just start with `onboard-project` — it checks whether a workspace is already loaded and invokes `central-workspace` itself if not, before anything else happens. Re-run it manually when onboarding a new tool or after major path changes.
 2. **Orient at session start** — `onboard-project` (workspace bootstrapped per Step 1) loads `docs_context`/`system.md`/`TODO.md` and, via `codebase-indexing`, ensures the code graph indexes are fresh (near-instant if already warm). If no docs exist yet, `onboard-project` falls back to `locate-code` → `analyze-code` → `architecture` to build them from scratch.
-3. **Plan the feature** — `feature` researches the codebase (re-invoking `onboard-project` if context isn't loaded), designs options, and writes a spec — pulling in `define-test-case` to draft the spec's testing strategy as sequenced, seam-anchored test cases *before* any code exists.
-4. **Implement phase by phase** — `implement` executes the approved spec, verifying and invoking `commit` after each phase. If interrupted mid-phase, `save-progress` checkpoints: a WIP commit (via `commit`) plus a numbered session file.
+3. **Plan the feature** — `feature` researches the codebase (re-invoking `onboard-project` if context isn't loaded), designs options, and writes a spec. Its testing strategy lists the *behaviors* that must hold, in plain language — not test cases. A case needs a confirmed seam, and the spec deliberately leaves class/method placement undecided, so seams don't exist yet at this point.
+4. **Implement phase by phase** — `implement` executes the approved spec. For each phase it decides that phase's seams, invokes `define-test-case` to turn the relevant behaviors into sequenced, seam-anchored cases, implements them in build order, then verifies and invokes `commit`. Drafting cases per phase — rather than all at once during planning — is what keeps each case a tracer bullet that informs the next. If interrupted mid-phase, `save-progress` checkpoints: a WIP commit (via `commit`) plus a numbered session file.
 5. **Resume later** — `resume-work` rebuilds context from that session file and hands off to `implement` to continue from the first unchecked step.
 6. **Document what shipped** — `document` analyzes the diff and writes a scoped doc to `core_docs_dir`, registering it in `doc_dictionary.md` so it surfaces automatically next time it's relevant.
 7. **Refresh the big picture periodically** — unlike `document` (one feature's diff), `architecture` re-scans the whole repo on its own cadence, keeping `CONTEXT.md`/`system.md`/`service-manifest.md` from drifting as many features land over time.
@@ -50,11 +50,11 @@ flowchart TD
 
     subgraph PLAN["Plan"]
         FEAT[feature]
-        DTC[define-test-case]
     end
 
     subgraph BUILD["Implement"]
         IMPL[implement]
+        DTC[define-test-case]
     end
 
     subgraph SHIP["Commit & Checkpoint"]
@@ -76,8 +76,8 @@ flowchart TD
     AC -. "then generate docs: bootstrap chain" .-> ARCH
 
     INIT -- "next: plan feature" --> FEAT
-    FEAT -- "draft tests: before code" --> DTC
     FEAT -- "hand off spec: once approved" --> IMPL
+    IMPL -- "draft tests: per phase, before its code" --> DTC
     FEAT -. "find pattern: as needed" .-> FP
 
     IMPL -- "commit: after each phase" --> COMMIT
@@ -192,7 +192,7 @@ npx skills add pdkproitf/skills@locate-code
 
 > Research the codebase, design options, and write a structured implementation plan ready to execute.
 
-Produces a complete spec file in `docs/specs/` covering design options, phased tasks, testing strategy (via `define-test-case`), and acceptance criteria.
+Produces a complete spec file in `docs/specs/` covering design options, phased tasks, the behaviors that must hold under test, and acceptance criteria.
 
 ```bash
 npx skills add pdkproitf/skills@feature
@@ -204,7 +204,7 @@ npx skills add pdkproitf/skills@feature
 
 > Execute an approved spec — phase by phase, with verification and commits after each phase.
 
-Reads a spec from `feature`, implements it step by step, updates checkboxes, runs validation commands, and commits each completed phase via `commit`.
+Reads a spec from `feature`, drafts each phase's test cases via `define-test-case` once that phase's seams are decided, implements them step by step, updates checkboxes, runs validation commands, and commits each completed phase via `commit`.
 
 ```bash
 npx skills add pdkproitf/skills@implement
@@ -216,7 +216,7 @@ npx skills add pdkproitf/skills@implement
 
 > Define acceptance test cases in DSL format — comment-first, covering happy paths, edge cases, errors, and authorization.
 
-Generates structured test case definitions using your project's existing DSL conventions, before any implementation begins.
+Generates structured test case definitions using your project's existing DSL conventions, scoped to one implementation phase and written before that phase's code. Invoked by `implement` rather than at planning time — every case is anchored to a confirmed seam, so it needs a real interface to point at.
 
 ```bash
 npx skills add pdkproitf/skills@define-test-case

@@ -6,7 +6,7 @@
 
 ## What it does
 
-`define-test-case` generates structured test case definitions for a feature before any implementation begins. It searches the codebase for existing DSL conventions and test patterns, then writes test cases as structured comments using those conventions — each anchored to a **seam** (the public interface under test) confirmed with the user before it's written.
+`define-test-case` generates structured test case definitions for one implementation phase, before that phase's code is written. It searches the codebase for existing DSL conventions and test patterns, then writes test cases as structured comments using those conventions — each anchored to a **seam** (the public interface under test) confirmed with the user before it's written.
 
 Each test case follows an implicit Given-When-Then structure separated by blank lines:
 
@@ -36,9 +36,11 @@ They're then arranged into a **build order** — sequenced so the first case is 
 
 ## When to use
 
-- Before implementing a feature — write tests first as comments
-- As a step within `feature` — it's invoked automatically to populate the Testing Strategy section
+- Before writing the code for a phase or slice — write tests first as comments
+- As a step within `implement` — it's invoked automatically at the start of each phase, seeded by the spec's **Behaviors to Cover**
 - When onboarding a QA engineer to a new area of the codebase
+
+**Scope it to a phase, not a whole feature.** Every case names a seam, so the interface has to be real (or about to be built) for the case to mean anything. That's why it runs during implementation rather than during planning — a spec written before any code exists can commit to *behaviors*, but not to the interfaces those behaviors are asserted through.
 
 ---
 
@@ -60,7 +62,7 @@ npx skills add pdkproitf/skills@define-test-case
 
 **Other tools:**
 ```
-@define-test-case <feature name or description>
+@define-test-case <phase or slice, and the behaviors it must satisfy>
 ```
 
 ---
