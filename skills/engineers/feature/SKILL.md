@@ -1,6 +1,6 @@
 ---
 name: feature
-description: Feature planning — research codebase, design options, write a structured spec/implementation plan to the project specs directory
+description: Feature & chore planning — research codebase, design options, write a structured spec/implementation plan to the project specs directory
 metadata:
   phase: "plan"
   input: "[adw_id] <prompt> — adw_id is optional; prompt is a plain-language description of the feature"
@@ -12,12 +12,12 @@ metadata:
 ## When to trigger
 
 Use this skill when the user:
-- asks to plan a feature or write an implementation spec
-- suggests implementing something and no spec exists yet
+- asks to plan a feature or chore, or write an implementation plan
+- suggests implementing or fixing something and no spec exists yet
 
-# Feature Planning
+# Feature & Chore Planning
 
-Generate a structured implementation plan for a feature and save it as a markdown file in the project's specs directory.
+Generate a structured implementation plan — for a new feature or a chore (fix, refactor, maintenance work with no new user-facing capability) — and save it as a markdown file in the project's specs directory.
 
 ## Input Arguments
 
@@ -62,16 +62,20 @@ Follow these steps **in order**. Do not skip ahead.
 
 Use `specs_dir` (default: `docs/specs/`).
 
+Determine `{type}`:
+- `feature` — new user-facing capability
+- `chore` — fix, refactor, or maintenance work with no new user-facing capability
+
 Save the file using this naming pattern:
 ```
-{specs_dir}{unix_timestamp}-feature-{descriptive-name}.md
+{specs_dir}{unix_timestamp}-{type}-{descriptive-name}.md
 ```
 If `adw_id` was provided:
 ```
-{specs_dir}{unix_timestamp}-feature-{adw_id}-{descriptive-name}.md
+{specs_dir}{unix_timestamp}-{type}-{adw_id}-{descriptive-name}.md
 ```
 
-Replace `{descriptive-name}` with a short, hyphenated name derived from the feature (e.g., `add-retry-logic`, `create-workflow-api`, `implement-agent-logging`).
+Replace `{descriptive-name}` with a short, hyphenated name derived from the request (e.g., `add-retry-logic`, `create-workflow-api`, `fix-nil-publish-job-args`).
 
 ### Step 4: Enumerate Behaviors to Cover
 
@@ -86,7 +90,7 @@ Write these into the **Testing Strategy** → **Behaviors to Cover** section of 
 ## Plan Format
 
 ```md
-# Feature: <feature name>
+# {Feature|Chore}: <name>
 
 ## Metadata
 - **adw_id:** `{adw_id if provided, otherwise omit this line}`
@@ -96,7 +100,9 @@ Write these into the **Testing Strategy** → **Behaviors to Cover** section of 
 ---
 
 ## Feature Description
-<What this feature does and why it matters. 2–4 sentences.>
+- **Context:** <one bullet — relevant background or current state>
+- **Problem:** <one bullet — what's wrong or missing>
+- **Solution:** <one bullet — what this plan does about it>
 
 ## User Story
 As a <type of user>,
@@ -104,10 +110,20 @@ I want to <action or goal>,
 So that <the benefit or outcome>.
 
 ## Problem Statement
-<The specific problem or gap this feature addresses. Be concrete — avoid vague language like "improve performance".>
+
+**Where**
+- `path/to/file:line` — <short code snippet or reference showing the issue>
+
+**Why**
+- <root-cause bullet — be concrete, avoid vague language like "improve performance">
+
+**What happens**
+- <consequence bullet — the observable effect of the problem>
 
 ## Solution Statement
-<The chosen approach and why it solves the problem. Reference the design option selected in Step 2.>
+
+1. <step of the chosen approach — reference the design option selected in Step 2>
+2. <step of the chosen approach>
 
 ---
 
@@ -209,6 +225,7 @@ Return the full file path of the created plan, e.g.:
 ```
 docs/specs/1711234567-feature-add-retry-logic.md
 docs/specs/1711234567-feature-adw-42-add-retry-logic.md
+docs/specs/1711234567-chore-fix-nil-publish-job-args.md
 ```
 
 ---
