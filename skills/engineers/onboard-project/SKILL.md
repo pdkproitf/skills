@@ -5,12 +5,15 @@ metadata:
   phase: "orient"
   input: "no arguments — invoke as-is"
   output: "summary of the codebase covering domain models, key workflows, and active work areas"
-  dependencies: "central-workspace (invoked if no workspace file is bootstrapped yet), codebase-indexing (index refresh)"
+  dependencies: "central-workspace (invoked if no workspace file is bootstrapped yet), codebase-indexing (index refresh), architecture (invoked if docs_context/system_context are missing)"
 ---
 
 # Prime
 
-Execute the `Read`, `Research` and `Report` sections in order to build a complete understanding of the codebase.
+Execute every section below **in order — Workspace → Index → Read → Research (if triggered) → Self-check → Report**
+— to build a complete understanding of the codebase. Do not jump to the user's task before Self-check
+confirms every step ran; a step that doesn't apply must still be explicitly marked N/A with a reason,
+not silently dropped.
 
 ## When to trigger
 
@@ -19,7 +22,7 @@ Use this skill when:
 - the user asks to "prime" or "load context" before starting work
 - another skill lists `onboard-project` as a dependency and context isn't loaded yet (invoke automatically)
 
-## Workspace (bootstrap if needed)
+## Step 1 — Workspace (bootstrap if needed)
 
 Check whether a `# WORKSPACE` section is already loaded in context (the auto-load file every
 tool loads at session start — `CLAUDE.md`, `.cursorrules`, etc. — would have pulled it in before
@@ -35,7 +38,7 @@ belongs solely to `central-workspace`.
   at its documented default and note in the Report that no workspace is configured, recommending
   `central-workspace` be installed.
 
-## Index (if available)
+## Step 2 — Index (if available)
 
 Invoke the **`codebase-indexing` skill** to ensure the code graph indexes are built and fresh
 before the reading skills below run. That skill is the single writer — it checks status cheaply
@@ -49,7 +52,14 @@ fall back to manual search — proceed to Read either way. For a very large, uni
 Fresh indexes accelerate `locate-code`, `find-patterns`, `analyze-code`, and enrich the
 `architecture` skill's output.
 
-## Read
+If `codebase-indexing` reports `codebase-memory-mcp` is available, note in the Report that the user
+may want standing permission for its read-only tools (`search_graph`, `get_code_snippet`,
+`get_architecture`, `query_graph`, `search_code`, `trace_path`, `index_status`, `list_projects`,
+`get_graph_schema`) — e.g. in Claude Code, an allow rule for `mcp__codebase-memory-mcp__*` read/list/get
+calls via the `update-config` skill, if available, so later orientation runs don't prompt per call.
+This is a suggestion only — never edit permission/settings files yourself here.
+
+## Step 3 — Read
 
 This skill **executes** the reading protocol; it doesn't define it. The protocol —
 tiers, reader roles, matching and budget rules — lives in `# WORKSPACE` → **Context Loading**,
@@ -67,12 +77,15 @@ which is auto-loaded every session and is authoritative. Follow it rather than r
    a trivial write, not a scan, so it isn't gated behind Research below.
 
 If the Tier 0 docs are absent but `README.md` or `docs_dictionary_file` already exist, don't generate
-them here — note the gap in the Report and recommend running `architecture`. Only missing docs across
-the board triggers Research below.
+them here — invoke the **`architecture` skill** directly to backfill `docs_context`/`system_context`.
+Enough context already exists from `README.md`/the dictionary to seed it, so the full Research pass
+below isn't needed for this case. Note in the Report that `architecture` ran to fill the gap. Only
+missing docs across the board triggers Research below.
 
-## Research
+## Step 4 — Research (conditional)
 
-If both `README.md` and `docs_dictionary_file` do not exist, trigger Research; otherwise skip it.
+If both `README.md` and `docs_dictionary_file` do not exist, trigger Research; otherwise skip it
+— but record the skip in Self-check below, don't just drop it.
 
 Use these tools in sequence to build a full picture before doing any work. All of the following skills will use `codebase-memory-mcp` if indexed (see Index step above):
 
@@ -87,7 +100,26 @@ Use these tools in sequence to build a full picture before doing any work. All o
 3. **`architecture` skill** — map the system into `docs_context` so future sessions don't repeat this research from scratch
    - Output: `docs_context` (business content) and its sibling `system.md` created
 
-## Report
+## Step 5 — Self-check (definition of done)
+
+Before writing the Report, confirm each item below — either checked off or explicitly marked N/A
+with the reason. Do not proceed to Report, and do not start the user's actual task, until every
+item is accounted for:
+
+- [ ] Workspace: `# WORKSPACE` confirmed present, or bootstrapped via `central-workspace`, or its
+      absence was noted (`central-workspace` unavailable)
+- [ ] Index: `codebase-indexing` invoked (or its unavailability noted)
+- [ ] Read: `docs_dictionary_file` read, Tier 0 loaded, Tier 1 matched, `todo_file` exists/created
+- [ ] Gap-fill: if Tier 0 was absent but `README.md`/`docs_dictionary_file` existed, `architecture`
+      was invoked directly (Step 3's gap-fill case) — or this case didn't apply
+- [ ] Research: triggered and completed if both `README.md` and `docs_dictionary_file` were absent
+      — or explicitly skipped because at least one existed
+- [ ] Permission suggestions from Step 2 (if any) captured for the Report
+
+If any box can't be checked because the step was actually skipped by mistake, go back and run it
+now — don't write it up as done.
+
+## Step 6 — Report
 
 Keep this a compact orientation summary — reference what each doc said, don't restate it in full. Cover:
 - What the app does and who uses it
@@ -95,3 +127,4 @@ Keep this a compact orientation summary — reference what each doc said, don't 
 - Key domain models and their relationships
 - Main workflows (e.g. how a video gets published)
 - Active work areas (from `todo_file`)
+- Suggested permission updates, if any (e.g. standing read/list/get access for `codebase-memory-mcp` tools)

@@ -17,7 +17,7 @@ Load project context before starting any task — prime the AI with domain model
 - Uses `locate-code` to map where key concepts live
 - Uses `analyze-code` to understand how they fit together
 - Uses `architecture` to write `docs/CONTEXT.md` for future sessions
-- Does NOT auto-generate `CONTEXT.md` if only it's missing (too heavy for every session start — flags gap, suggests running `architecture` directly)
+- If only `CONTEXT.md`/`system.md` are missing (README/dictionary already exist), invokes `architecture` directly to backfill them — skips the heavier `locate-code`/`analyze-code` pass since enough context already exists to seed it
 
 **Report generated:**
 - Compact orientation summary (not a restatement of every doc)

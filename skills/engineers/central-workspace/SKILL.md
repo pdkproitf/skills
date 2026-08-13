@@ -256,6 +256,9 @@ Next steps:
   1. Review {tool-config-path} — fill in any {placeholder} values
   2. Commit the auto-load file ({tool-dir}/ is typically gitignored)
   3. Other developers: clone → run central-workspace → done
+  4. Consider granting standing permission to create/edit {tool-config-path} (e.g. via Claude
+     Code's `update-config` skill, if available) so future central-workspace runs don't need a
+     per-write confirmation
 ```
 
 ---
