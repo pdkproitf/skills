@@ -9,7 +9,7 @@
 `architecture` scans **the current repo** as a whole — not a diff — and writes a purpose-split
 documentation layer, split by who reads it rather than into one growing monolith:
 
-- **`docs_context`** (default `.docs/CONTEXT.md`) — business flows, journeys, concepts, owned capabilities; PM-readable. **Authored** (reconciled on re-run).
+- **`docs_context`** (default `.docs/CONTEXT.md`) — business flows, journeys, concepts, owned capabilities; PM-readable. **Authored** (reconciled on re-run). Optionally ends with a **System at a Glance** mermaid diagram — components and their runtime as nodes, transport and payload on the arrows (`HTTPS · /orders`, `AMQP · order.created`). It's the one opt-in section in the layer: the skill asks once on a fresh run, defaults to no, and never adds it unprompted on a reconcile.
 - **`system.md`** (sibling) — layers, data flow, domain models, invariants, file index, API surface, outbound dependencies, event contracts; for developers and AI agents. **Authored** (reconciled on re-run) — this is the single source of technical truth.
 - **`service-manifest.md`** — a portable, agent-ready registry entry: who this service is, what contracts it **publishes**, and what it **consumes** from other services (by name, with spec pointers — never inlined schemas). **Projected**, not authored — every field traces back to something already in `system.md`, plus git identity. It exists purely so an orchestrator can read one small file per repo instead of every repo's full `system.md`.
 
