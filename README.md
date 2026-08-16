@@ -23,7 +23,7 @@ Skills are grouped by who uses them day-to-day.
 
 ### [engineers](skills/engineers/)
 
-Software engineering workflows — orient in a codebase, plan a feature, implement it phase by phase, define test cases, document what shipped, and commit cleanly. Thirteen skills covering the full loop from `onboard-project` to `commit`.
+Software engineering workflows — orient in a codebase, plan a feature, choose the structure it needs, implement it phase by phase, define test cases, document what shipped, and commit cleanly. Sixteen skills covering the full loop from `onboard-project` to `create-pr`.
 
 See [skills/engineers/README.md](skills/engineers/README.md) for the full list and install commands.
 

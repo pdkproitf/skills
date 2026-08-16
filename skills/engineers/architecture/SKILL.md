@@ -5,7 +5,7 @@ metadata:
   phase: "orient"
   input: "no arguments — scans the current codebase"
   output: "three artifacts for the current repo — CONTEXT.md (business), system.md (technical), and service-manifest.md (portable, multi-repo-aggregation unit)"
-  dependencies: "codebase-memory-mcp, graphify"
+  dependencies: "codebase-indexing, design-patterns, codebase-memory-mcp, graphify"
 ---
 
 # Map Architecture
@@ -109,7 +109,7 @@ Then read the artifacts (for both single-service and multi-service contexts):
 1. **If `.docs/indexing/graphify/LESSONS.md` was produced by graphify**, parse it to extract:
    - **God nodes** → central entities (identify service boundaries)
    - **Community clusters** → semantically related components (identify owned domains)
-   - **Architecture patterns** → recurring design patterns (extract topology rules)
+   - **Architecture patterns** → recurring structural motifs (extract topology rules). graphify reports that a motif *recurs*; naming it is Step 2b's **Patterns in use** row, via `design-patterns`
    - **Prior decisions** → implicit or explicit ADRs (list in Architecture Decisions section)
 
 2. **If graphify was unavailable** (no `.docs/indexing/graphify/LESSONS.md`): proceed with manual extraction from README and code comments.
@@ -135,6 +135,7 @@ nothing is mined twice. For each signal, try the primary tool first; fall back i
 | **Events** | `codebase-memory-mcp` `search_code()` | Search for @RabbitListener/@KafkaListener | grep listeners + `application.yml`/`application.properties` |
 | **Business workflows** | `graphify` community detection | Clusters of related entities/endpoints | Read integration tests + `README.md` + docs |
 | **Purpose + concepts** | `graphify` semantic relationships | Query entity glossary + domain clusters | Read `README.md`, `docs/`, comments |
+| **Patterns in use** | `design-patterns` (`identify` mode) | Pass the facts already mined above — layers, domain models, class names, file index | Same skill, reading the file index manually |
 
 **If both codebase-memory-mcp and graphify unavailable:**
 Use `locate-code` / `analyze-code` skills for traversal, or fall back to manual grep + file reading per the "Fallback" column above.
@@ -162,7 +163,10 @@ File: `.docs/CONTEXT.md` · ≤150 lines · **`type: business-context`**.
 
 1. Open [templates/system.md](templates/system.md)
 2. Fill all required sections from Step 2c facts (layers, data flow, API surface, etc.)
-3. Omit skippable sections (API Surface, External Dependencies, Events) if none found
+3. Fill **Patterns in Use** from the `design-patterns` `identify` output — only patterns the
+   codebase is organized around, capped at 8 bullets. This section records conventions a
+   contributor must match; it is not an assessment, so carry no recommendations into it
+4. Omit skippable sections (Patterns in Use, API Surface, External Dependencies, Events) if none found
 
 File: `.docs/system.md` · ≤300 lines · **`type: system-context`**.
 
@@ -215,8 +219,9 @@ and the manifest template's "How the orchestrator uses it". A single-repo `archi
   `type / service / version / updated / tags`; set `updated:` to today. On reconcile, bump
   `updated:` only for files whose content actually changed.
 - `system.md` has three independently-skippable interface sections (API Surface, External
-  Dependencies, Events) — omit a section the service genuinely has none of; the rest of the
-  file is always produced. See the template's authoring notes for the per-section rules.
+  Dependencies, Events) plus a skippable **Patterns in Use** — omit a section the service
+  genuinely has none of; the rest of the file is always produced. See the template's authoring
+  notes for the per-section rules.
 - Templates use `[docs_context]` as a placeholder to resolve to the actual configured path when writing the file.
 
 ---

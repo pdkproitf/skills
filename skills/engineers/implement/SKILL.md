@@ -5,7 +5,7 @@ metadata:
   phase: "implement"
   input: "path to the spec file (e.g. docs/specs/1234567-feature-name.md)"
   output: "implemented feature with updated spec checkboxes, verification results, and committed phases"
-  dependencies: "onboard-project, define-test-case, commit"
+  dependencies: "onboard-project, define-test-case, design-patterns, commit"
 ---
 
 # Implement Plan
@@ -99,7 +99,7 @@ Proposed: <how you suggest proceeding — e.g. implement the behavior as a servi
 - **Keep functions small** — aim for 10–30 lines per method; if a method grows beyond that, it is doing too much
 - **Single responsibility** — each class and method should have one clear concern; name it to reflect exactly what it does
 - **Function composition** — a function may call multiple other functions as long as they all belong to the same logical concern; preferred over inlining everything into one long method
-- **Thin model** — avoid adding business logic to models; create a service instead; research design patterns to apply to the logic
+- **Thin model** — avoid adding business logic to models; create a service instead. When the shape of that service is an open question — several variants of one algorithm, a new extension point, a boundary to decouple — invoke the `design-patterns` skill in `apply` mode before writing it. Take its answer including "no pattern"; it reports rejected candidates for exactly this reason.
 - **Group related steps** — steps that are tightly coupled (e.g. building objects only to immediately pass them to the next call) should be grouped into a single method rather than exposed as individual steps in the orchestrator
 - **Clean orchestrators** — top-level service methods should read as a sequence of high-level calls; implementation details live in helpers, not in the orchestrator
 - **Naming convention** — use clear action verbs: `validate*()`, `extract*()`, `build*()`, `verify*()`, `check*()`, `process*()`, `persist*()`

@@ -31,6 +31,8 @@ The skills below aren't independent utilities — they form one pipeline. This i
 
 `locate-code`, `analyze-code`, and `find-patterns` don't sit in this numbered flow — they're on-demand research helpers other skills reach for mid-step (e.g. `feature` finding an existing pattern to follow, `implement` locating a file). All three, plus `architecture`, read the graph that only `codebase-indexing` ever builds.
 
+`design-patterns` spans steps 3, 4, and 7 rather than sitting between them. `feature` invokes it on a structural design option and records the surviving pattern as a *convention* — never a class name, since the spec leaves placement undecided. `implement` invokes it again per phase, once the seam is real and the shape of the service is an open question. `architecture` invokes its cheapest mode during a system scan, to name the patterns already in use for `system.md`. Run standalone, it audits existing code and writes a pattern review report — the one mode that never edits anything.
+
 ```mermaid
 flowchart TD
     subgraph SETUP["Setup — once per project, auto-triggered by onboard-project if missing"]
@@ -46,6 +48,7 @@ flowchart TD
         LC[locate-code]
         AC[analyze-code]
         FP[find-patterns]
+        DP[design-patterns]
     end
 
     subgraph PLAN["Plan"]
@@ -79,6 +82,9 @@ flowchart TD
     FEAT -- "hand off spec: once approved" --> IMPL
     IMPL -- "draft tests: per phase, before its code" --> DTC
     FEAT -. "find pattern: as needed" .-> FP
+    FEAT -. "check design: if structural" .-> DP
+    IMPL -. "shape the service: if structural" .-> DP
+    DP -. "prior art first: always" .-> FP
 
     IMPL -- "commit: after each phase" --> COMMIT
     IMPL -. "locate file: as needed" .-> LC
@@ -94,6 +100,7 @@ flowchart TD
     AC -. "reads index: if fresh" .-> CI
     FP -. "reads index: if fresh" .-> CI
     ARCH -. "reads/refreshes: if stale" .-> CI
+    ARCH -. "name patterns in use: identify mode" .-> DP
 ```
 
 **Reading the diagram:** solid arrows are direct invocations (one skill hands off to another); dashed arrows are conditional or read-only relationships. `onboard-project` ↔ `central-workspace` is intentionally two-way — `onboard-project` conditionally invokes it to bootstrap the workspace, then reads back what it wrote — every other pair is one-directional. `codebase-indexing` is the only node with incoming "reads" edges from four different skills and no outgoing invocation of its own — it's a pure dependency, never a caller, by design (see its own README for the one-writer/many-readers rationale).
@@ -172,6 +179,20 @@ Searches for existing implementations, extracts complete working snippets, and d
 
 ```bash
 npx skills add pdkproitf/skills@find-patterns
+```
+
+---
+
+### [design-patterns](design-patterns/)
+
+> Choose, apply, and audit design patterns — with a fit test that lets the answer be "no pattern".
+
+One catalog (GoF + modern + architectural, 38 patterns) and one decision procedure, in four modes: name the patterns a codebase already uses, assess a design option before code exists, apply a pattern while building, or audit existing code and write a review report. Every proposed candidate has to survive a disqualification pass — problem match, complexity, language idiom, codebase fit, scale — and rejected candidates are reported alongside accepted ones. Pattern knowledge is two-tier: a one-line-per-pattern dictionary read whole, and detail files read one section at a time.
+
+**Solves:** patterns applied because they're familiar, not because they fit · abstraction added for one implementation · classic OOP structure where a closure or a trait would do
+
+```bash
+npx skills add pdkproitf/skills@design-patterns
 ```
 
 ---

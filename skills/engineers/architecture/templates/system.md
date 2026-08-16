@@ -1,6 +1,6 @@
 # Template: `docs_context`/system.md
 
-≤300 lines · 8 required sections + 3 skippable interface sections · every File Index path
+≤300 lines · 8 required sections + 1 skippable pattern section + 3 skippable interface sections · every File Index path
 must resolve on disk. This is the single technical file — how the service is built **and**
 what it exposes, calls, and consumes/produces.
 
@@ -39,6 +39,12 @@ tags: [architecture, technical, interface, load-first]
 
 ## Data Flow
 [trigger → component → component → outcome, one line per representative flow]
+
+## Patterns in Use
+Structural conventions a contributor must match, not a catalog of every pattern present.
+Max 8 bullets — omit the section if the codebase carries no load-bearing pattern.
+Format: `**[Pattern]** — [where] · [the signal that identified it]`
+- **[Pattern]** — [package or class] · [signal]
 
 ## API Surface
 [version note]. Format: `METHOD /path — purpose`. No auth/field details.

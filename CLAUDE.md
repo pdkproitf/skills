@@ -5,7 +5,7 @@
 A growing collection of portable, tool-agnostic AI skills that work across Claude Code, Cursor, GitHub Copilot, Windsurf, Cline, and other AI tools. Each skill is a single markdown file following the [agentskills.io specification](https://agentskills.io/specification) — no dependencies, no frameworks, no lock-in.
 
 Skills are organized by audience:
-- **`skills/engineers/`** — software engineering workflows (13 skills covering planning, implementation, documentation, testing, committing)
+- **`skills/engineers/`** — software engineering workflows (16 skills covering planning, design, implementation, documentation, testing, committing)
 - **`skills/utilities/`** — cross-cutting tools for managing the AI session itself
 - **`agents/`** — full multi-step agents that can run autonomously or in response to user requests
 
@@ -25,6 +25,7 @@ Skills are organized by audience:
 │   │   ├── locate-code/               # Find WHERE code lives
 │   │   ├── analyze-code/              # Understand HOW code works
 │   │   ├── find-patterns/             # Extract examples and conventions
+│   │   ├── design-patterns/           # Choose, apply, or audit design patterns
 │   │   ├── feature/                   # Research & write feature spec
 │   │   ├── implement/                 # Execute spec phase by phase
 │   │   ├── define-test-case/          # Define acceptance tests (DSL), per implement phase
@@ -83,6 +84,7 @@ Skills form a pipeline. Typical feature flow:
 2. **`feature`** — Research codebase, design options, write spec (incl. the behaviors that must hold under test)
 3. **`implement`** — Execute spec phase by phase, verify, commit each phase
 4. **`define-test-case`** — Invoked by `implement` at the start of each phase: turns that phase's behaviors into seam-anchored DSL cases before its code is written
+   - **`design-patterns`** — Invoked by `feature` on a structural design option, and again by `implement` per phase when the shape of a service is open; also runs standalone to audit existing code
 5. **`commit`** — Group changes by logical concern, write Conventional Commit messages
 6. **`save-progress`** — Checkpoint: WIP commit + session file (if interrupted)
 7. **`resume-work`** — Restore session and continue from last unchecked step
@@ -93,6 +95,7 @@ On-demand research skills:
 - **`locate-code`** — Find WHERE code lives (file paths by layer)
 - **`analyze-code`** — Understand HOW code works (data flow, logic, dependencies)
 - **`find-patterns`** — Extract working examples and conventions
+- **`design-patterns`** — Choose, apply, or audit design patterns (GoF + modern + architectural)
 - **`codebase-indexing`** — Build/refresh structural and semantic code graphs (one writer, many readers)
 
 See [skills/engineers/README.md](skills/engineers/README.md) for the full flowchart.

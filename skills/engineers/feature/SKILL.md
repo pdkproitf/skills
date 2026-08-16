@@ -5,7 +5,7 @@ metadata:
   phase: "plan"
   input: "[adw_id] <prompt> — adw_id is optional; prompt is a plain-language description of the feature"
   output: "path to the written spec file in specs_dir"
-  dependencies: "onboard-project"
+  dependencies: "onboard-project, design-patterns"
 ---
 
 
@@ -57,6 +57,7 @@ Follow these steps **in order**. Do not skip ahead.
 4. Wait for **all** sub-tasks to finish before writing anything.
 5. Collect the architectural conventions that bear on this feature — from `CLAUDE.md`, `docs_context`, matched `core_docs_dir` files, and feedback memory (e.g. thin-model, jobs-orchestrate-only). These populate the plan's **Conventions to Follow** section.
 6. Present findings with 2–3 design options, each with clear pros and cons. Note if a matched dictionary entry overlaps with this feature. Get confirmation on the chosen approach before moving to Step 3.
+7. If the chosen option is structural — a growing conditional, a new extension point, swappable providers, a boundary to decouple — invoke the `design-patterns` skill in `design` mode on it. Add any pattern that survives its fit test to **Conventions to Follow** as a rule ("payment providers are selected through a strategy interface, not a conditional"), not as a class or method to create. Skip this when the option adds no new structure.
 
 ### Step 3: Write the Plan
 
