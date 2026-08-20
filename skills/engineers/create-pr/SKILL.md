@@ -160,6 +160,7 @@ Provide the PR's description and The PR body structure
 Created PR [#123](https://github.com/OWNER/REPO/pull/123)
 Output the PR URL in the session context so follow-up skills can reference it. and the PR description in markdown format so the user can copy it into the PR body if needed.
 ```
+Out put the title and description in markdown format if PR's not created, you just provides the compare url.
 
 ### Monitor CI (optional)
 If the user wants to wait for green CI before requesting review:
